@@ -834,6 +834,17 @@ void dlio::OdomNode::callbackPointCloud(const sensor_msgs::PointCloud2ConstPtr& 
 
   this->geo.first_opt_done = true;
 
+
+  {
+      // write to file:
+      static std::ofstream posesFile ("./direct_lidar_inertial_odometry_after_map_poses.txt");
+      if ( posesFile.is_open() )
+      {
+          posesFile << (this->scan_header_stamp.toNSec()) << " " << this->state.p.x() << " " << this->state.p.y() << " " << this->state.p.z()
+                    << " " << this->state.q.x() << " " << this->state.q.y() << " " << this->state.q.z() << " " << this->state.q.w() << std::endl;
+      }
+  }
+
 }
 
 void dlio::OdomNode::callbackImu(const sensor_msgs::Imu::ConstPtr& imu_raw) {
