@@ -33,12 +33,14 @@ dlio:
 
   extrinsics:
     baselink2imu: # transform a point from imu into baselink
-      t: [ 0.0, 0.0, 0.0 ]
+      t: [ 0.006253, -0.011775, 0.007645 ]
       R: [ 1.,  0.,  0.,
            0.,  1.,  0.,
            0.,  0.,  1. ]
-    baselink2lidar: # transform a point from lidar into baselink / imu
-      t: [-0.037, -0.0084, -0.02558]
-      R: [ 1.,  0.,  0.,
+    baselink2lidar: # transform a point from lidar into baselink
+      t: [ 0., 0., 0.03618]
+      R: [-1.,  0.,  0.,
            0., -1.,  0.,
-           0.,  0., -1. ]
+           0.,  0.,  1. ]
+
+

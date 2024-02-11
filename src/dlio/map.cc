@@ -50,7 +50,7 @@ void dlio::MapNode::start() {
 }
 
 void dlio::MapNode::publishTimer(const ros::TimerEvent& e) {
-
+  if ( this->map_pub.getNumSubscribers() == 0 ) return;
   if (this->dlio_map->points.size() == this->dlio_map->width * this->dlio_map->height) {
     sensor_msgs::PointCloud2 map_ros;
     pcl::toROSMsg(*this->dlio_map, map_ros);
