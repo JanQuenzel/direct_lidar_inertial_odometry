@@ -356,6 +356,7 @@ void dlio::OdomNode::publishPose(const ros::TimerEvent& e) {
 }
 
 void dlio::OdomNode::publishToROS(pcl::PointCloud<PointType>::ConstPtr published_cloud, Eigen::Matrix4f T_cloud) {
+  //this->store_deskewed_cloud(published_cloud, T_cloud); // only for test to see how deskewed works.
   this->publishCloud(published_cloud, T_cloud);
 
   // nav_msgs::Path
@@ -429,6 +430,27 @@ void dlio::OdomNode::publishToROS(pcl::PointCloud<PointType>::ConstPtr published
 
   br.sendTransform(transformStamped);
 
+}
+
+void dlio::OdomNode::store_deskewed_cloud(pcl::PointCloud<PointType>::ConstPtr deskew_cloud, Eigen::Matrix4f T_cloud) {
+    static int scan_wait_num = 0;
+    static uint64_t prev_pcd_end_time = this->scan_header_stamp.toNSec();
+    scan_wait_num ++;
+    constexpr int pcd_save_interval = 25;
+    const int size = deskew_cloud->points.size();
+    if ( scan_wait_num >= pcd_save_interval && size > 0 )
+    {
+        pcl::PointCloud<PointType>::Ptr deskewed_scan_t_ (boost::make_shared<pcl::PointCloud<PointType>>());
+
+        pcl::transformPointCloud (*deskew_cloud, *deskewed_scan_t_, T_cloud);
+
+        const std::string all_points_dir(std::string("./dlio_") + std::to_string(prev_pcd_end_time) + std::string(".pcd"));
+        pcl::PCDWriter pcd_writer;
+        std::cout << "current scan saved to " << all_points_dir << std::endl;
+        pcd_writer.writeBinary(all_points_dir, *deskewed_scan_t_);
+        scan_wait_num = 0;
+        prev_pcd_end_time = this->scan_header_stamp.toNSec();
+    }
 }
 
 void dlio::OdomNode::publishCloud(pcl::PointCloud<PointType>::ConstPtr published_cloud, Eigen::Matrix4f T_cloud) {
@@ -955,7 +977,7 @@ void dlio::OdomNode::callbackImu(const sensor_msgs::Imu::ConstPtr& imu_raw) {
       }
 
       this->imu_calibrated = true;
-
+      //  throw std::runtime_error("");
     }
 
   } else {

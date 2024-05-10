@@ -11,7 +11,7 @@
 -->
 
 <launch>
-  <!-- Launch file for ouster OS0-128 LiDAR -->
+  <!-- Launch file for ouster OS1-64 LiDAR -->
   <param name="/use_sim_time" value="true" />
 
   <arg name="robot_namespace" default="robot"/>
@@ -45,7 +45,7 @@
   <node ns="$(arg robot_namespace)" name="dlio_map" pkg="direct_lidar_inertial_odometry" type="dlio_map_node" output="screen" clear_params="true">
 
     <!-- Load parameters -->
-    <rosparam file="$(find direct_lidar_inertial_odometry)/cfg/dlio_nce.yaml" command="load"/>
+    <rosparam file="$(find direct_lidar_inertial_odometry)/cfg/dlio_nc.yaml" command="load"/>
     <rosparam file="$(find direct_lidar_inertial_odometry)/cfg/params.yaml" command="load"/>
 
     <!-- Subscriptions -->
